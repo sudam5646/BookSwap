@@ -39,7 +39,7 @@ const Routing = () =>{
         <Route path = "/sell">
           <Sell />
         </Route>
-        <Route path = "/item/:bookid">
+        <Route path = "/book/:bookid">
           <Item />
         </Route>
         <Route path = "/chatwindow">
