@@ -50,7 +50,7 @@ const Home = () =>{
                                 
                                 </h5>
                             <div className="card-image">
-                                <Link to={"/item/"+item._id} >
+                                <Link to={"/book/"+item._id} >
                                     <img src={item.pic} />
                                 </Link>
                                 
