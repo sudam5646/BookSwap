@@ -2,11 +2,13 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const requireLogin = require('../middleware/requireLogin')
+const { route } = require('./auth')
 const Book = mongoose.model('Book')
 
 router.get('/allbooks',(req,res)=>{
     Book.find()
     .populate('postedBy',"_id name")
+    .sort('-createdAt')
     .then(books=>{
         res.json(books)
     }).catch(err=>{
@@ -51,11 +53,29 @@ router.post('/addbook',requireLogin, (req,res) =>{
 router.get('/mybooks',requireLogin,(req,res)=>{
     Book.find({postedBy:req.user._id})
     .populate("PostedBy","_id name")
+    .sort('-createdAt')
     .then(mybooks =>{
         res.json({mybooks})
     })
     .catch(err=>{
         console.log(err)
+    })
+})
+
+router.delete('/deletemybook',requireLogin,(req,res)=>{
+    const {id} = req.body
+    Book.findByIdAndDelete(id, (err,mybook)=>{
+        if(err){
+            return res.statusCode(400).json({error:err})
+        }else{
+            if(mybook){
+                console.log(`You deleted book of ${mybook.short_form} from your profile`)
+                res.json({message:`You deleted book of ${mybook.short_form} from your profile`})
+            }else{
+                res.json({message:'Book is already deleted just refresh your page'})
+            }
+            
+        }
     })
 })
 

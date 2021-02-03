@@ -45,7 +45,7 @@ const Signup = () =>{
     return (
         <div className="mycard">
             <div className="card auth-card input-field">
-                <h2>BOOK SELLER</h2>   
+                <h2>BOOK SWAPP</h2>   
                 <input
                 type = "text"
                 placeholder = "name"
@@ -70,7 +70,8 @@ const Signup = () =>{
                 </button>  
                 <h5>
                     Already have an account?<Link to='/signin'><span style={{color:"blue"}}>signin</span></Link>    
-                </h5>         
+                </h5>     
+                <h6><Link to='/resetpassword'><span style={{color:"blue"}}>Forgot password?</span></Link></h6>     
 
             </div>
         </div>
