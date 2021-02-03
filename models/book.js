@@ -29,6 +29,9 @@ const bookSchema = new mongoose.Schema({
     pic:{
         type:String,
         required:true
+    },
+    cloudinary_id:{
+        type:String
     }
 },{timestamps:true})
 

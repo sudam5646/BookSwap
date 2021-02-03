@@ -3,6 +3,7 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const requireLogin = require('../middleware/requireLogin')
 const { route } = require('./auth')
+const cloudinary = require('./cloudinary')
 const Book = mongoose.model('Book')
 
 router.get('/allbooks',(req,res)=>{
@@ -26,7 +27,7 @@ router.get('/item/:itemid',(req,res)=>{
 })
 
 router.post('/addbook',requireLogin, (req,res) =>{
-    const {title,short_form,amount,city,college,pic} = req.body
+    const {title,short_form,amount,city,college,pic,cloudinary_id} = req.body
     if(!title ||!short_form ||!amount ||!city ||!college ||!pic){
         if(!pic){
             return res.status(400).json({error:"please upload photoof book"})
@@ -41,6 +42,7 @@ router.post('/addbook',requireLogin, (req,res) =>{
         city,
         college,
         pic,
+        cloudinary_id,
         postedBy:req.user
     })
     book.save().then(result =>{
@@ -63,20 +65,26 @@ router.get('/mybooks',requireLogin,(req,res)=>{
 })
 
 router.delete('/deletemybook',requireLogin,(req,res)=>{
-    const {id} = req.body
-    Book.findByIdAndDelete(id, (err,mybook)=>{
-        if(err){
-            return res.statusCode(400).json({error:err})
-        }else{
-            if(mybook){
-                console.log(`You deleted book of ${mybook.short_form} from your profile`)
-                res.json({message:`You deleted book of ${mybook.short_form} from your profile`})
+    try{
+           
+        const {id} = req.body
+        Book.findByIdAndDelete(id, async(err,mybook)=>{
+            if(err){
+                return res.statusCode(400).json({error:err})
             }else{
-                res.json({message:'Book is already deleted just refresh your page'})
+                if(mybook){
+                    await cloudinary.uploader.destroy(mybook.cloudinary_id)
+                    console.log(`You deleted book of ${mybook.short_form} from your profile`)
+                    res.json({message:`You deleted book of ${mybook.short_form} from your profile`})
+                }else{
+                    res.json({message:'Book is already deleted just refresh your page'})
+                }
+                
             }
-            
-        }
-    })
+        })
+    }catch(err){
+        console.log(err)
+    }
 })
 
 

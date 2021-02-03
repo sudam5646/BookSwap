@@ -1,5 +1,5 @@
-import React, {useState,useContext,useEffect} from 'react'
-import {Link, useHistory} from 'react-router-dom'
+import React, {useState,useEffect} from 'react'
+import {useHistory} from 'react-router-dom'
 import M from 'materialize-css'
 
 const Sell = () =>{
@@ -10,10 +10,11 @@ const Sell = () =>{
     const [college,setCollege] = useState("")
     const [image,setImage] = useState("")
     const [url,setUrl] = useState("")
+    const [id,setId] = useState("")
     const history = useHistory()
 
     useEffect(()=>{
-        if(url){
+        if(url && id){
             fetch("/addbook",{
                 method:"post",
                 headers:{
@@ -26,7 +27,8 @@ const Sell = () =>{
                     amount,
                     city,
                     college,
-                    pic:url
+                    pic:url,
+                    cloudinary_id:id
                 })
                 }).then(res =>res.json())
                 .then(data =>{
@@ -57,7 +59,9 @@ const Sell = () =>{
             body:data
         }).then(res=>res.json())
         .then(data=>{
+            console.log(data)
             setUrl(data.url)
+            setId(data.public_id)
         }).catch(err=>{
             console.log(err)
         })
@@ -109,7 +113,6 @@ const Sell = () =>{
                         type="file" 
                         onChange={(e=>{
                             setImage(e.target.files[0])
-                            console.log("image",image)
                         })}/>
                         
                     </div>
