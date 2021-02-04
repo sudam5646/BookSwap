@@ -44,7 +44,7 @@ const Sell = () =>{
                 console.log(err)
             })
         }
-    },[url])
+    },[url,id])
 
     const PostDetails = () =>{
         if(!image){

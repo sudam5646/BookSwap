@@ -13,13 +13,11 @@ const Home = () =>{
                     }
                 }).then(res=>res.json())
                 .then(result=>{
-                    console.log("result",result)
                     let finalresult = result.filter((item)=>{
                         if(item.postedBy._id != state._id){
                             return item
                         }
                     })
-                    console.log("finalresult",finalresult)
                     setData(finalresult)
                 })
         }
@@ -30,7 +28,6 @@ const Home = () =>{
                 }
             }).then(res=>res.json())
             .then(result=>{
-                console.log("result",result)
                 setData(result)
             })
         }

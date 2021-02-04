@@ -1,10 +1,8 @@
 import React, {useState,useEffect,useContext} from 'react'
-import {useHistory,Link} from 'react-router-dom'
-import {UserContext} from '../../../App'
+import {Link} from 'react-router-dom'
 import M from 'materialize-css'
 
 const Profile=()=> {
-    const {state,dispatch} = useContext(UserContext)
     const [data,setData] = useState([])
     const [data2,setData2] = useState([])
     useEffect(()=>{
@@ -14,12 +12,10 @@ const Profile=()=> {
                     }
                 }).then(res=>res.json())
                 .then(result=>{
-                    console.log("result",result)
                     setData(result.mybooks)
                 })
     },[data2])
     const DeleteThisBook = (id) =>{
-        console.log("id",id)
         var confirmed = window.confirm("Do you want to delete this book from your profile")==true
         console.log(confirmed)
         if(confirmed){
