@@ -1,6 +1,7 @@
 import React, {useState,useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import M from 'materialize-css'
+import Resizer from 'react-image-file-resizer';
 
 const Sell = () =>{
     const [title,setTitle] = useState("")
@@ -45,6 +46,26 @@ const Sell = () =>{
             })
         }
     },[url,id])
+
+    const resizeFile = (file) => new Promise(resolve => {
+        Resizer.imageFileResizer(file, 300, 300, 'JPEG', 100, 0,
+        uri => {
+          resolve(uri);
+        },
+        'base64'
+        );
+    });
+
+    const resizingImage = async (event) => {
+        try {
+            const file = event.target.files[0];
+            const finalimage = await resizeFile(file);
+            setImage(finalimage);
+        } catch(err) {
+            console.log(err);
+        }
+    
+    }
 
     const PostDetails = () =>{
         if(!image){
@@ -112,7 +133,7 @@ const Sell = () =>{
                         <input 
                         type="file" 
                         onChange={(e=>{
-                            setImage(e.target.files[0])
+                            resizingImage(e)
                         })}/>
                         
                     </div>
