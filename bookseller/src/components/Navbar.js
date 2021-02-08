@@ -4,12 +4,20 @@ import {UserContext} from '../App'
 import navLogo from '../../src/images/BookSwaplogo.jpeg'
 import M from 'materialize-css'
 
-const Navbar = () =>{
+const Navbar = (props) =>{
     const {state,dispatch} = useContext(UserContext)
     const history = useHistory()
     const renderList = ()=>{
         if(state){
             return[
+                <li 
+                    style={{color:'black'}}>
+                    <input
+                        type='text'
+                        placeholder="Search"
+                        onChange={(e)=>props.fetchbytitle(e.target.value)}>
+                    </input>
+                </li>,
                 <li><Link to="/chatwindow">Chat</Link></li>,
                 <li><Link to="/sell">Sell</Link></li>,
                 <li><Link to="/profile">Profile</Link></li>,
@@ -26,8 +34,18 @@ const Navbar = () =>{
             ]
         }else{
             return[
+                <li 
+                    style={{color:'black'}}>
+                    <input
+                        type='text'
+                        placeholder="Search by book name"
+                        onChange={(e)=>props.fetchbytitle(e.target.value)}>
+                    </input>
+                </li>,
                 <li onClick={DecideComponent}><Link to={state?'/sell':'/signin'}>Sell</Link></li>,
                 <li><Link to="/signin">Signin</Link></li>,
+                
+            
                 <li><Link to="/signup">Signup</Link></li>
             ]
         }
@@ -47,6 +65,7 @@ const Navbar = () =>{
                         <ul id="nav-mobile" className="right">
                             {renderList()}
                         </ul>
+                        
                 </div>
             </nav>
             

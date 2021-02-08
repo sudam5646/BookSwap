@@ -16,7 +16,6 @@ const Item=()=> {
         }).then(res=>res.json())
         .then(result=>{
             setData(result)
-            console.log(result)
         })
     },[])
     const DecideComponent = () =>{

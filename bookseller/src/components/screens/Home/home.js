@@ -1,15 +1,17 @@
 import React, {useState,useEffect,useContext} from 'react'
 import {useHistory,Link} from 'react-router-dom'
 import {UserContext} from '../../../App'
+import M from 'materialize-css'
 
-const Home = () =>{
+const Home = (props) =>{
     const [data,setData] = useState([])
+    const [loading,setLoading] = useState(false)
     const {state,dispatch} = useContext(UserContext)
     useEffect(()=>{
         if(state){
                 fetch('/allbooks',{
                     headers:{
-                        "Authorization" : "Bearer " + localStorage.getItem("bookswapjwt")
+                        "Content-Type":"application/json"
                     }
                 }).then(res=>res.json())
                 .then(result=>{
@@ -19,27 +21,51 @@ const Home = () =>{
                         }
                     })
                     setData(finalresult)
+                    setLoading(true)
                 })
         }
         else{
             fetch('/allbooks',{
                 headers:{
-                    "Authorization" : "Bearer " + localStorage.getItem("bookswapjwt")
+                    "Content-Type":"application/json"
                 }
             }).then(res=>res.json())
             .then(result=>{
                 setData(result)
+                setLoading(true)
             })
         }
     },[state])
+const datafromsearch = props.data
+    useEffect(()=>{
+        setLoading(false)
+        if(datafromsearch){
+            if(state){
+                    let result = datafromsearch
+                    let finalresult = result.filter((item)=>{
+                        if(item.postedBy._id != state._id){
+                            return item
+                        }
+                    })
+                    setData(finalresult)
+                    setLoading(true)
+            }
+            else{
+            setData(datafromsearch)
+            setLoading(true)
+            }
+        }
+    },[datafromsearch])
+
 
     return (
-        <>
-        {data.length ?
+        <>        
+        {loading ?
         <div className="home">
             {    
                 data.map(item=>{
                     return(
+                        <>
                         <div className="card home-card" key={item._id}>
                             <h5 style = {{padding:"10px"}}>
                                 <span style={{paddingLeft:"20px"}}>{item.short_form}</span>
@@ -58,6 +84,7 @@ const Home = () =>{
 
                             </div>
                         </div>
+                        </>
                     )
                 })
                 

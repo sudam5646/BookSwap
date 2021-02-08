@@ -1,5 +1,5 @@
 //import logo from './logo.svg';
-import React, {createContext,useReducer,useContext,useEffect} from 'react'
+import React, {useState,createContext,useReducer,useContext,useEffect} from 'react'
 import './App.css';
 import Signin from './components/screens/login/signin';
 import Signup from './components/screens/register/signup'
@@ -13,10 +13,11 @@ import Chatwindow from './components/screens/Chat/chat'
 import Resetpassword from './components/screens/login/resetpassword'
 import Newpassword from './components/screens/login/Newpassword'
 import {reducer,initialState} from './reducers/userReducer'
+import M from 'materialize-css'
 
 export const UserContext = createContext()
 
-const Routing = () =>{
+const Routing = (props) =>{
   const history = useHistory()
   const {state,dispatch} = useContext(UserContext)
   useEffect(()=>{
@@ -28,7 +29,7 @@ const Routing = () =>{
   return(
     <Switch>
       <Route exact path = "/">
-          <Home />
+          <Home data={props.data}/>
         </Route>
         <Route path = "/signin">
           <Signin />
@@ -60,12 +61,42 @@ const Routing = () =>{
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
+  const [data,setData] = useState([])
+  const fetchbytitle = (bookname) =>{
+    fetch("/searchbytitle",{
+        method:"post",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            bookname
+        })
+        }).then(res =>res.json())
+        .then(data =>{
+            if(data.error){
+                M.toast({html: data.error,classes:"#f44336 red"})
+            }
+            else{
+                if(!data.length){
+                    alert("No result found")
+                }else{
+                    setData(data)
+                }
+                
+            }
+    }).catch(err=>{
+        console.log(err)
+    })
+}
+
+
+
   return (
     <div className="App">
       <UserContext.Provider value={{state,dispatch}}>
         <BrowserRouter>
-        <Navbar />
-        <Routing />
+        <Navbar fetchbytitle={fetchbytitle}/>
+        <Routing data={data}/>
       </BrowserRouter>
       </UserContext.Provider>
     </div>

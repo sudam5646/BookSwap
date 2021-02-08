@@ -16,6 +16,62 @@ router.get('/allbooks',(req,res)=>{
         console.log(err)
     })
 })
+
+router.post('/searchbytitle',(req,res)=>{
+    var bookname = req.body.bookname
+    bookname = bookname.toString()
+    Book.find({$or:[
+                    {title:{$regex: bookname, $options: "$i"}},
+                    {short_form:{$regex: bookname, $options: "$i"}},
+                    {college:{$regex: bookname, $options: "$i"}},
+                    {city:{$regex: bookname, $options: "$i"}}
+                ]}
+        )
+    .populate('postedBy',"_id name")
+    .sort('-createdAt')
+    .then(books=>{
+        res.json(books)
+    }).catch(err=>{
+        console.log(err)
+    })
+})
+
+// router.post('/searchbyshortform',(req,res)=>{
+//     var shortform = req.body.short_form
+//     Book.find({short_form:{$regex: shortform, $options: "$i"}})
+//     .populate('postedBy',"_id name")
+//     .sort('-createdAt')
+//     .then(books=>{
+//         res.json(books)
+//     }).catch(err=>{
+//         console.log(err)
+//     })  
+// })
+
+// router.post('/searchbycollege',(req,res)=>{
+//     var college = req.body.college
+//     Book.find({college:{$regex: college, $options: "$i"}})
+//     .populate('postedBy',"_id name")
+//     .sort('-createdAt')
+//     .then(books=>{
+//         res.json(books)
+//     }).catch(err=>{
+//         console.log(err)
+//     })  
+// })
+
+// router.post('/searchbycity',(req,res)=>{
+//     var city = req.body.city
+//     Book.find({city:{$regex: city, $options: "$i"}})
+//     .populate('postedBy',"_id name")
+//     .sort('-createdAt')
+//     .then(books=>{
+//         res.json(books)
+//     }).catch(err=>{
+//         console.log(err)
+//     })  
+// })
+
 router.get('/item/:itemid',(req,res)=>{
     Book.findOne({_id:req.params.itemid})
     .populate('postedBy',"_id name")
