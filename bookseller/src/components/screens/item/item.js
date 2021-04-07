@@ -2,8 +2,9 @@ import React, {useState,useEffect, useContext} from 'react'
 import {UserContext} from '../../../App'
 import {useParams,useHistory} from 'react-router-dom'
 import M from 'materialize-css'
+import Chatwindow from '../Chat/chat'
 
-const Item=()=> {
+const Item=({socket})=> {
     const {bookid} = useParams()
     const [data,setData] = useState(null)
     const {state,dispatch} = useContext(UserContext)
@@ -18,9 +19,41 @@ const Item=()=> {
             setData(result)
         })
     },[])
-    const DecideComponent = () =>{
-        if(state){
-            history.push('/chatwindow')
+    const DecideComponent = async(postedbyid,messageto) =>{
+        console.log("decidecomponent called")
+        console.log('state',state)
+        console.log('socket',socket)
+
+        if(state && socket){
+            var chatroomname1 = state._id.toString() + postedbyid.toString()
+            var chatroomname2 = postedbyid.toString() + state._id.toString()
+            socket.emit("joinRoom", {
+                chatroomname1,
+                chatroomname2,
+                postedbyid
+              });
+              fetch('/chatroom',{
+                method:"post",
+                headers:{
+                    "Authorization" : "Bearer " + localStorage.getItem("bookswapjwt"),
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    chatroomname1,
+                    chatroomname2
+                })
+              }).then(res=>res.json())
+              .then(data=>{
+                  console.log(data)
+                  if(data){
+                      var chatroomId = data._id
+                    history.push(`/chatwindow/${chatroomId}/${messageto}`)
+                  }else{
+                    DecideComponent(postedbyid,messageto)
+                  }
+                  
+              })
+            
         }
         else{
             M.toast({html: "You must be logged in",classes:"#f44336 red"})
@@ -30,10 +63,10 @@ const Item=()=> {
     return (
         <>
             {data?
-                <div>
+                <div style={{marginTop:80}}>
                     <div>
                         <div className="col-sm-1"></div>
-                        <div className="col-sm-6">
+                        <div className="col-sm-6" style={{marginRight:20}}>
                             <div style={{height:"400px"}} className="card home-card">
                                 <img style={{height:"400px"}} src={data.pic} alt={data.short_form}></img>
                             </div>
@@ -51,7 +84,7 @@ const Item=()=> {
                                     <button 
                                     type="button" 
                                     className="btn btn-info btn-block"
-                                    onClick={DecideComponent}>
+                                    onClick={()=>DecideComponent(data.postedBy._id,data.postedBy.name)}>
                                         Chat with seller</button>
                                 </p>
                                 

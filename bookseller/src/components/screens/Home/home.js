@@ -60,12 +60,11 @@ const datafromsearch = props.data
 
     return (
         <>        
-        {loading ?
+        {loading && data.length ?
         <div className="home">
             {    
                 data.map(item=>{
                     return(
-                        <>
                         <div className="card home-card" key={item._id}>
                             <h5 style = {{padding:"10px"}}>
                                 <span style={{paddingLeft:"20px"}}>{item.short_form}</span>
@@ -84,7 +83,6 @@ const datafromsearch = props.data
 
                             </div>
                         </div>
-                        </>
                     )
                 })
                 

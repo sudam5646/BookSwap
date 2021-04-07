@@ -9,7 +9,6 @@ const requireLogin = require('../middleware/requireLogin')
 const nodemailer = require('nodemailer')
 const sendgridTransport = require('nodemailer-sendgrid-transport')
 const crypto = require('crypto');
-const e = require('express');
 
 //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
 
@@ -152,5 +151,6 @@ router.post('/new-password',(req,res)=>{
         console.log(err)
     })
 })
+
 
 module.exports = router

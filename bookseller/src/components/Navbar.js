@@ -10,7 +10,7 @@ const Navbar = (props) =>{
     const renderList = ()=>{
         if(state){
             return[
-                <li 
+                <li key={1}
                     style={{color:'black'}}>
                     <input
                         type='text'
@@ -18,10 +18,10 @@ const Navbar = (props) =>{
                         onChange={(e)=>props.fetchbytitle(e.target.value)}>
                     </input>
                 </li>,
-                <li><Link to="/chatwindow">Chat</Link></li>,
-                <li><Link to="/sell">Sell</Link></li>,
-                <li><Link to="/profile">Profile</Link></li>,
-                <li>
+                <li key={2}><Link to={`/chatwindow/${null}/${null}`}>Chat</Link></li>,
+                <li key={3}><Link to="/sell">Sell</Link></li>,
+                <li key={4}><Link to="/profile">Profile</Link></li>,
+                <li key={5}>
                     <button className="btn #c62828 red darken-3"
                 onClick = {()=>{
                     localStorage.clear()
@@ -34,7 +34,7 @@ const Navbar = (props) =>{
             ]
         }else{
             return[
-                <li 
+                <li key={6}
                     style={{color:'black'}}>
                     <input
                         type='text'
@@ -42,11 +42,11 @@ const Navbar = (props) =>{
                         onChange={(e)=>props.fetchbytitle(e.target.value)}>
                     </input>
                 </li>,
-                <li onClick={DecideComponent}><Link to={state?'/sell':'/signin'}>Sell</Link></li>,
-                <li><Link to="/signin">Signin</Link></li>,
+                <li key={7} onClick={DecideComponent}><Link to={state?'/sell':'/signin'}>Sell</Link></li>,
+                <li key={8}><Link to="/signin">Signin</Link></li>,
                 
             
-                <li><Link to="/signup">Signup</Link></li>
+                <li key={9}><Link to="/signup">Signup</Link></li>
             ]
         }
     }
@@ -58,7 +58,7 @@ const Navbar = (props) =>{
     }
     return (
         <div>
-            <nav>
+            <nav className="sticky">
                 <div
                 className="nav-wrapper white">
                         <Link to={'/'} className="brand-logo left"><img style={{height:52}} src={navLogo} alt='BookSwap'></img></Link>

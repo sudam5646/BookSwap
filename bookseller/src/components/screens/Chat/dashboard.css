@@ -1,0 +1,10 @@
+.dashboardSection {
+    width: 40vw;
+    height: 80vh;
+    margin: auto;
+    padding: 10px !important;
+    border: 1px solid #eee;
+    position: relative;
+    justify-content: right;
+    text-align: right;
+  }

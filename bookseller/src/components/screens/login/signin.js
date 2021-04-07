@@ -1,9 +1,9 @@
 import React, {useState,useContext} from 'react'
-import {Link, useHistory} from 'react-router-dom'
+import {Link, useHistory, withRouter} from 'react-router-dom'
 import M from 'materialize-css'
 import {UserContext} from '../../../App'
 
-const Signin = () =>{
+const Signin = (props) =>{
     const {state,dispatch} = useContext(UserContext)
     const [password,setPassword] = useState("")
     const [email,setEmail] = useState("")
@@ -71,5 +71,5 @@ const Signin = () =>{
     )
 }
 
-export default Signin
+export default withRouter(Signin)
 

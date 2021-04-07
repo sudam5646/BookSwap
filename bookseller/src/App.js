@@ -12,8 +12,11 @@ import Profile from './components/screens/profile/profile'
 import Chatwindow from './components/screens/Chat/chat'
 import Resetpassword from './components/screens/login/resetpassword'
 import Newpassword from './components/screens/login/Newpassword'
+import ChatroomPage from './components/screens/Chat/ChatroomPage'
 import {reducer,initialState} from './reducers/userReducer'
 import M from 'materialize-css'
+import DashboardPage from './components/screens/Chat/DashboardPage';
+import io from "socket.io-client";
 
 export const UserContext = createContext()
 
@@ -32,7 +35,7 @@ const Routing = (props) =>{
           <Home data={props.data}/>
         </Route>
         <Route path = "/signin">
-          <Signin />
+          <Signin setupSocket={props.setupSocket} />
         </Route>
         <Route path = "/signup">
           <Signup />
@@ -40,12 +43,15 @@ const Routing = (props) =>{
         <Route path = "/sell">
           <Sell />
         </Route>
-        <Route path = "/book/:bookid">
-          <Item />
+        <Route path = "/book/:bookid" >
+          <Item socket={props.socket} />
         </Route>
-        <Route path = "/chatwindow">
-          <Chatwindow />
+        {props.socket?
+        <Route path = "/chatwindow/:chatroomId/:messageto">
+          <Chatwindow  socket={props.socket}/>
         </Route>
+        :''}
+        
         <Route path = "/profile">
           <Profile />
         </Route>
@@ -55,13 +61,52 @@ const Routing = (props) =>{
         <Route path = "/reset/:token">
           <Newpassword />
         </Route>
+        <Route exact path="/chatroom/:id">
+          <ChatroomPage socket={props.socket}/>
+        </Route>
+        <Route path = "/dashboard">
+          <DashboardPage socket={props.socket} />
+        </Route>
     </Switch>
   )
 }
 
 function App() {
-  const [state, dispatch] = useReducer(reducer, initialState)
-  const [data,setData] = useState([])
+//socket code
+const [socket, setSocket] = useState(null);
+const history = useHistory()
+const [state, dispatch] = useReducer(reducer, initialState)
+const [data,setData] = useState([])
+useEffect(() => {
+  setupSocket();
+  //eslint-disable-next-line
+}, [state]);
+
+  const setupSocket = () => {
+    const token = localStorage.getItem("bookswapjwt");
+    if (token && !socket) {
+      console.log('setupsocket called')
+      const newSocket = io("https://book-swappp.herokuapp.com", {
+        query: {
+          token: localStorage.getItem("bookswapjwt"),
+        },
+      });
+
+      newSocket.on("disconnect", () => {
+        setSocket(null);
+        setTimeout(setupSocket, 3000);
+      });
+
+      newSocket.on("connect", () => {
+      });
+
+      setSocket(newSocket);
+    }
+  };
+
+  
+//socket code
+  
   const fetchbytitle = (bookname) =>{
     fetch("/searchbytitle",{
         method:"post",
@@ -94,9 +139,16 @@ function App() {
   return (
     <div className="App">
       <UserContext.Provider value={{state,dispatch}}>
-        <BrowserRouter>
-        <Navbar fetchbytitle={fetchbytitle}/>
-        <Routing data={data}/>
+        <BrowserRouter >
+        <div style={{zIndex:5,position:'fixed'}}>
+          <Navbar fetchbytitle={fetchbytitle}/>
+        </div>
+        <div style={{marginBlockStart:80}}>
+          <Routing socket={socket} setupSocket={setupSocket} data={data}/>
+        </div>
+        
+        
+        
       </BrowserRouter>
       </UserContext.Provider>
     </div>
