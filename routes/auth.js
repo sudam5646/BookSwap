@@ -79,7 +79,8 @@ router.post('/signin', (req,res) =>{
 })
 
 router.post('/reset-password',(req,res)=>{
-    var {email} = req.body
+    try{
+        var {email} = req.body
     email = email.trim()
     crypto.randomBytes(32,(err,buffer)=>{
         if(err){
@@ -102,10 +103,13 @@ router.post('/reset-password',(req,res)=>{
             })
         })
         .catch(err=>{
-            res.status(err.response.status)
-            return res.send(err.message);
-        })
-    })    
+            console.log(err)
+            })
+    })
+    }catch{
+
+    }
+        
 })
 
 async function sendmail(req, callback){
