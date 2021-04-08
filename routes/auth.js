@@ -101,6 +101,9 @@ router.post('/reset-password',(req,res)=>{
                 })
             })
         })
+        .catch(err=>{
+        console.log(err)
+        })
     })    
 })
 
