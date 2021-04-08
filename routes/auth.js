@@ -81,7 +81,7 @@ router.post('/signin', (req,res) =>{
 router.post('/reset-password',(req,res)=>{
     var {email} = req.body
     email = email.trim()
-    crypto.randomBytes(32,async(err,buffer)=>{
+    crypto.randomBytes(32,(err,buffer)=>{
         if(err){
             console.log(err)
         }
