@@ -8,6 +8,7 @@ const Resetpassword = () =>{
     const history = useHistory()
 
     const PostData = ()=>{
+        console.log('keypress called')
         if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)){
             M.toast({html:"Invalid Email",classes:"#f44336 red"})
             return
@@ -18,7 +19,7 @@ const Resetpassword = () =>{
                 "Content-Type":"application/json"
             },
             body:JSON.stringify({
-                email
+                email:email.toUpperCase()
             })
             }).then(res =>res.json())
             .then(data =>{
@@ -43,7 +44,10 @@ const Resetpassword = () =>{
                 type = "text"
                 placeholder = "email"
                 value={email}
-                onChange={(e) =>setEmail(e.target.value.toUpperCase())}
+                onChange={(e) =>setEmail(e.target.value.trim())}
+                onKeyPress ={e=>{if(e.key === 'Enter'){
+                    {PostData()}
+                }}}
                 />     
                 <button className="btn waves-effect waves-light #64b5f6 blue darken-1"
                 onClick={PostData}>

@@ -25,7 +25,7 @@ const Signup = () =>{
             body:JSON.stringify({
                 name,
                 password,
-                email
+                email:email.toUpperCase()
             })
             }).then(res =>res.json())
             .then(data =>{
@@ -56,13 +56,16 @@ const Signup = () =>{
                 type = "text"
                 placeholder = "email"
                 value={email}
-                onChange={(e) =>setEmail(e.target.value.toUpperCase().trim())}
+                onChange={(e) =>setEmail(e.target.value().trim())}
                 />
                 <input
                 type = "password"
                 placeholder = "password"
                 value={password}
                 onChange={(e) =>setPassword(e.target.value.trim())}
+                onKeyPress ={e=>{if(e.key === 'Enter'){
+                    {PostData()}
+                }}}
                 /> 
                 <button className="btn waves-effect waves-light #64b5f6 blue darken-1"
                 onClick={PostData}>

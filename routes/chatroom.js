@@ -4,9 +4,6 @@ const mongoose = require('mongoose');
 const Chatroom = mongoose.model("Chatroom")
 const requireLogin = require('../middleware/requireLogin')
 
-router.get('/',(req,res)=>{
-    res.json({message:"chatroom worked"})
-})
 router.post('/create-chatroom',async(req,res)=>{
     var id = req.body._id1.toString() + req.body._id2.toString();
     const chatroomExists = await Chatroom.findOne({name:id})

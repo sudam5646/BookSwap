@@ -106,6 +106,9 @@ const ChatroomPage = ({ match, socket,chatroomId,messageto }) => {
               name="message"
               placeholder="Say something!"
               ref={messageRef}
+              onKeyPress ={e=>{if(e.key === 'Enter'){
+                {sendMessage()}
+            }}}
             />
           </div>
           <div>

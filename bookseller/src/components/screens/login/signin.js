@@ -21,7 +21,7 @@ const Signin = (props) =>{
             },
             body:JSON.stringify({
                 password,
-                email
+                email:email.toUpperCase()
             })
             }).then(res =>res.json())
             .then(data =>{
@@ -49,13 +49,16 @@ const Signin = (props) =>{
                 type = "text"
                 placeholder = "email"
                 value={email}
-                onChange={(e) =>setEmail(e.target.value.toUpperCase())}
+                onChange={(e) =>setEmail(e.target.value.trim())}
                 />
                 <input
                 type = "password"
                 placeholder = "password"
                 value={password}
                 onChange={(e) =>setPassword(e.target.value)}
+                onKeyPress ={e=>{if(e.key === 'Enter'){
+                    {PostData()}
+                }}}
                 />    
                 <button className="btn waves-effect waves-light #64b5f6 blue darken-1"
                 onClick={PostData}>

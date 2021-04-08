@@ -7,20 +7,7 @@ const jwt = require('jsonwebtoken');
 const {JWT_SECRET} = require('../config/key');
 const requireLogin = require('../middleware/requireLogin')
 const nodemailer = require('nodemailer')
-const sendgridTransport = require('nodemailer-sendgrid-transport')
 const crypto = require('crypto');
-
-//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
-
-const transporter = nodemailer.createTransport(sendgridTransport({
-    auth:{
-        api_key:"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"
-    }
-}))
-
-router.get('/protected',requireLogin, (req,res) => {
-    res.send("hello")
-})
 
 router.post('/signup', (req,res) =>{
     var {name,email,password} = req.body
@@ -94,7 +81,7 @@ router.post('/signin', (req,res) =>{
 router.post('/reset-password',(req,res)=>{
     var {email} = req.body
     email = email.trim()
-    crypto.randomBytes(32,(err,buffer)=>{
+    crypto.randomBytes(32,async(err,buffer)=>{
         if(err){
             console.log(err)
         }
@@ -107,26 +94,43 @@ router.post('/reset-password',(req,res)=>{
             console.log(user.email)
             user.resetToken = token
             user.expireToken = Date.now() + 3600000
-            user.save().then(result=>{
-                transporter.sendMail({
-                    to:user.email,
-                    from:"pccoerbookseller@gmail.com",
-                    subject:"Password reset",
-                    html:`
-                    <p>You requested for password reset</p>
-                    <h5>click in this 
-                        <a href="https://book-swappp.herokuapp.com/reset/${token}">
-                            link
-                        </a>
-                        to reset password
-                    </h5>
-                    `
+            req.token = token
+            user.save().then((result)=>{
+                sendmail(req, info => {
+                    res.json({message:"Check your mail"})
                 })
-                res.json({message:"Check your mail"})
             })
         })
-    })
+    })    
 })
+
+async function sendmail(req, callback){
+    let transport = nodemailer.createTransport({
+        service : 'gmail',
+        auth : {
+            user : 'pccoerbookseller@gmail.com',
+            pass : '9503165458'
+        }
+    });
+    let mailoptions = {
+        from : 'Book Swap <no-reply@gmail.com>',
+        to : req.body.email, 
+        subject : 'Password reset',
+        //text :  textBody,
+        html : `
+        <p>You requested for password reset</p>
+        <h5>click in this 
+            <a href="https://book-swappp.herokuapp.com/reset/${req.token}">
+                link
+            </a>
+            to reset password
+        </h5>
+        `
+    };
+    let info = await transport.sendMail(mailoptions);
+    callback(info);
+    
+}
 
 router.post('/new-password',(req,res)=>{
     if(!req.body.password){

@@ -43,6 +43,9 @@ const Newpassword = () =>{
                 placeholder = "Enter new password"
                 value={password}
                 onChange={(e) =>setPassword(e.target.value.trim())}
+                onKeyPress ={e=>{if(e.key === 'Enter'){
+                    {PostData()}
+                }}}
                 />    
                 <button
                 style={{margin:20}} 
